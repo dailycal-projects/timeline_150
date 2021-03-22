@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<script src="https://d3js.org/d3.v4.js"></script>
+    <div id="timeline" ></div>
+    <body></body>
+<script>
+var svg= d3.select("body")
+//these attributes set the size of the SVG object
+  .append("svg")
+    .attr("width", 500)
+    .attr("height", 500);
+
+            var imgs = svg.append('g').selectAll("img").data([0]);
+                imgs.enter()
+                .append("image")
+                .attr("xlink:href", "ww1.png")
+                .attr("x", "50")
+                .attr("y", "0")
+                .attr("width", "200")
+                .attr("height", "200");
+
+</script>
+<img src="ww1.png" x="0" y="0" width="400" height="300"></img>

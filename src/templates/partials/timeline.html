@@ -8,25 +8,51 @@
 <center>150 Years of The Daily Californian</center>
 
 <!-- Create a div where the graph will take place -->
-<div id="timeline"></div>
+<div id="two_divs" style="display: table;">
+    <div id="timeline1" style="display: table-cell;"></div>
+    <div id="timeline2" style="display: table-cell;"></div>
+</div>
 
 <!--start Javascript portion-->
 <script>
 // set the dimensions and margins of the graph. These dimensions will resize based on the relative size of the screen by the user.
-var margin = {top: 20, right: 30, bottom: 30, left: 200},
-    width = 800 - margin.left - margin.right,
+let pageWidth = $(window).width();
+var clicked = "none";
+
+var margin = {top: 20, right: 30, bottom: 30, left: 0},
+    width = 500,
     height = 7000 - margin.top - margin.bottom;
 
-// Append the svg_majors object to the div of the page.
+// Append the svg_timeline object to the div of the page.
 //An SVG is a "Scalable Vector Graphic" -- like a canvas for us to add 2-D shapes onto.
-var svg_majors = d3.select("#timeline")
+var svg_timeline = d3.select("#timeline1")
 //these attributes set the size of the SVG object
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+          "translate(" + 100 + "," + margin.top + ")");
+
+            var imgs = svg_timeline.selectAll("img").data([0]);
+                imgs.enter()
+                .append("svg:img")
+                .attr("xlink:href", "https://drive.google.com/file/d/1i4ZFwEa7G47VncdUWPkjeo6E3wq-SRDp/view?usp=sharing")
+                .attr("x", "60")
+                .attr("y", "60")
+                .attr("width", "20")
+                .attr("height", "20");
+
+var svg_content = d3.select("#timeline2")
+//these attributes set the size of the SVG object
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("transform",
+          "translate(" + 0 + "," + 0 + ")")
+  .append("g")
+    .attr("transform",
+          "translate(" + 50 + "," + margin.top + ")");
 
 // Parse the Data
 d3.csv("majors.csv", function(data) {
@@ -37,7 +63,7 @@ d3.csv("majors.csv", function(data) {
 
   // Now we append a "g" element. "g" elements have children which share their attributes.
   //In this case, the axis will have size 12 benton-sans font.
-  svg_majors.append("g")
+  svg_timeline.append("g")
     .attr("transform", "translate(0," + height + ")")
     .style("font-family", "benton-sans")
     .style("font-size", "12")
@@ -49,10 +75,10 @@ d3.csv("majors.csv", function(data) {
     .domain(data.map(function(d) { return d.group; }))
     .padding(1);
 
-  svg_majors.append("g")
+  svg_timeline.append("g")
     .attr("class", "yaxis")
     .style("font-family", "benton-sans-bold")
-    .style("font-size", "24")
+    .style("font-size", "18")
     .call(d3.axisLeft(y).tickSize(0));
 
   // Lines
@@ -61,7 +87,7 @@ d3.csv("majors.csv", function(data) {
   // Calling "data" binds the data variable to our selection.
   // Since the selection is empty, D3 creates a new line for each data point "d".
 
-  svg_majors.append("line")
+  svg_timeline.append("line")
       .attr("x1", function(d) { return 70; })
       .attr("x2", function(d) { return 70; })
       .attr("y1", function(d) { return y("1871"); })
@@ -69,7 +95,7 @@ d3.csv("majors.csv", function(data) {
       .attr("stroke", "gray")
       .attr("stroke-width", "2px")
 
-  svg_majors.selectAll("timeline-circle")
+  svg_timeline.selectAll("timeline-circle")
     .data(data)
     .enter().append("circle")
       .attr("cx", function(d) { return 70; })
@@ -79,56 +105,142 @@ d3.csv("majors.csv", function(data) {
       .style("fill", "#69b3a2")
 
 
-  svg_majors.append("g")
+  svg_timeline.append("g")
     .selectAll("text")
     .data(data)
     .enter().append("text")
     .attr("x", 100)
       .attr("y", function(d) { return y(d.group); })
       .attr("dy", 6)
+      .attr("id", "timeline-content")
       .style("font-family", "benton-sans")
-      .style("font-size", "13")
-      .style("fill", "#6a6a6a")
-    .text(function(d) { return "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." })
-
-  var colors = d3.scaleOrdinal().domain(['Voting rate', 'Registration rate']).range(["#69b3a2", "#4C4082"]);
-
-  var legend = svg_majors.append("g")
-      .style("font-family", "benton-sans")
-      .style("font-size", 16)
-      .style("font-size", 16)
-      .attr("text-anchor", "start")
-      .attr('transform', "translate(-100,0)")
-    .selectAll("g")
-    .data(["Registration rate", "Voting rate"])
-  .enter().append("g")
-     .attr("class", "legend")
-    .attr("transform", function(d, i) { return "translate(" + i * 200 + ",-10)"; });
+      .style("font-size", "16")
+      .style("fill", "black")
+    .text(function(d) { return d.text })
 
 //Again, we select the rectangle objects. Since there are none, we add them.
 //These rectangles are entirely transparent and only exist so that text appears when the user hovers over them.
-svg_majors.selectAll("myrect")
+svg_timeline.selectAll("myrect")
     .data(data)
     .enter()
     .append("rect")
       .attr("x", 0)
-    .attr("y", function(d) { return y(d.group) - 22.5; })
+    .attr("y", function(d) { return y(d.group) - 45; })
       .attr("width", width)
-      .attr("height", 60)
-      .attr("fill", "white")
+      .attr("height", 100)
+      .attr("fill", "gray")
       .style("opacity", 0)
-      .attr("stroke", "grey")
+      .attr("stroke", "white")
       .attr("stroke-width", "1px")
+      .on("click", function(d) {
+            addBox(d);
+            showLabel_click(d);
+          })
       .on("mouseover", function(d) {
-            showLabel(d);
+            showLabel_hover(d);
           })
       .on("mousemove", moveLabel)
     .on("mouseout", function(d) { hideLabel(d); })
 
 
-})
+    function addBox(d) {
+      clicked = d.group;
 
-    function showLabel(d) {
+      svg_content.select("#timelinebox").remove()
+      svg_content.selectAll('timelinebox')
+      .data([d])
+      .enter()
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", function(d) {return y(d.group) - 25; })
+      .attr("width", width)
+      .attr("height", 500)
+      .attr("fill", "#d3d3d3")
+      .attr("id", "timelinebox")
+      .style("opacity", 100)
+      .attr("stroke", "grey")
+      .attr("stroke-width", "1px")
+
+      svg_content.select('#img').remove()
+
+      var imgs = svg_content.append('g').selectAll("img").data([d]);
+                imgs.enter()
+                .append("image")
+                .attr("xlink:href", "ww1.png")
+                .attr("x", "0")
+                .attr("id", "img")
+                .attr("y", function(d) {return y(d.group) - 25; })
+                .attr("width", "500")
+                .attr("height", "375");
+
+    svg_content.append("g")
+      .selectAll("text")
+      .data([d])
+      .enter().append("text")
+      .attr("x", 10)
+        .attr("y", function(d) { return y(d.group) + 400; })
+        .attr("dy", 6)
+        .attr("id", "timeline-text")
+        .style("font-family", "benton-sans")
+        .style("font-size", "16")
+        .style("fill", "black")
+      .text(function(d) { return d.text })
+
+      svg_content.selectAll('#fancy-line').remove();
+      svg_content.selectAll('fancy-line')
+      .data([d])
+      .enter()
+      .append("line")
+      .attr("x1", -50)
+      .attr("x2", 0)
+      .attr("id", 'fancy-line')
+      .attr("y1", function(d) {return y(d.group); })
+      .attr("y2", function(d) {return y(d.group); })
+      .attr("stroke", "#2d637f")
+      .attr("stroke-width", "5px")
+
+      svg_timeline.select("#clickedbox").remove();
+      svg_timeline.selectAll('clickedbox')
+      .data([d])
+      .enter()
+      .append("rect")
+      .attr("x", 100)
+      .attr("y", function(d) {return y(d.group) - 45; })
+      .attr("width", width)
+      .attr("height", 100)
+      .attr("id", "clickedbox")
+      .style("opacity", 100)
+      .attr("fill", "#dedede")
+      svg_timeline.select("#clickedbox").lower()
+  svg_content.selectAll('text#timeline-text').call(wrap, 500, 20);
+    }
+
+  function wrap(text, width, transform) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y") - 100,
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", transform).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", transform).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
+
+  svg_timeline.selectAll('text#timeline-content').call(wrap, 600, 200);
+    function showLabel_click(d) {
      d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
        d3.select(this)
          .style('fill', '#d3d3d3')
@@ -154,6 +266,40 @@ svg_majors.selectAll("myrect")
      })
     }
 
+    function showLabel_hover(d) {
+     d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
+       if (d1 != clicked) {
+       d3.select(this)
+         .style('fill', '#d3d3d3')
+       }
+       })
+
+     d3.selectAll('.tick>text').each(function(d1, i) {
+      if (d1 == d.group)  {
+       d3.select(this)
+         .style('fill', 'black')
+       }
+     })
+
+      svg_timeline.select("#raised").each(function(d1, i) {
+          d3.select(this).remove()
+       })
+
+      svg_timeline.selectAll('raised')
+      .data([d])
+      .enter()
+      .append("rect")
+      .attr("x", 100)
+      .attr("y", function(d) {return y(d.group) - 45; })
+      .attr("width", width)
+      .attr("height", 100)
+      .attr("id", "raised")
+      .style("opacity", 100)
+      .attr("fill", "#dedede")
+      svg_timeline.select("#raised").lower()
+
+    }
+
     function moveLabel() {
       var coords = [d3.event.pageX, d3.event.pageY];
 
@@ -162,13 +308,17 @@ svg_majors.selectAll("myrect")
     }
 
     function hideLabel(d) {
-     d3.selectAll('.tick>text').transition().each(function(d1, i) {
+     d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
+       if (d1 != clicked) {
        d3.select(this)
-         .style('fill', 'black').transition().duration(1000)
-     })
-     d3.selectAll('circle').each(function(d1, i) {
-       d3.select(this)
-         .style('fill', '#69b3a2')
+         .style('fill', '#d3d3d3')
+       }
+       })
+      svg_timeline.select("#raised").each(function(d1, i) {
+          d3.select(this).remove()
        })
     }
+
+})
+
 </script>
