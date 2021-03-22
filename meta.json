@@ -6,29 +6,29 @@
   "timestamp": "2020-10-25T08:13-0400",
   "dateline": "10/25/20 08:13 PM EDT",
   "header": {
-    "headline": "Who votes at UC Berkeley?",
-    "subhed": "Comparing voting rates",
+    "headline": "150 Years at The Daily Californian",
+    "subhed": "A timeline",
     "byline": "Alex Zhao",
     "byline_link": "https://www.dailycal.org/author/alexzhao"
   },
   "share": {
     "fbook": {
-      "card_title": "Who votes at UC Berkeley?",
-      "card_description": "Comparing voting rates",
+      "card_title": "150 Years at The Daily Californian",
+      "card_description": "A timeline",
       "author": "dailycal"
     },
     "twitter": {
-      "card_title": "Who votes at UC Berkeley?",
-      "card_description": "Comparing voting rates",
-      "share_tweet": "Comparing voting rates",
+      "card_title": "150 Years at The Daily Californian",
+      "card_description": "A timeline",
+      "share_tweet": "A timeline of The Daily Californian",
       "author": "@dailycal"
     },
     "image": {
-      "url": "http://projects.dailycal.org/2020/voting/images/voted.JPG",
+      "url": "https://www.dailycal.org/assets/uploads/2021/03/LARGE-2021-DC150.jpg",
       "alt": "<Text>",
       "type": "image/jpeg",
       "width": "600",
-      "height": "300"
+      "height": "400"
     },
     "keywords": "Daily Cal, news"
   }

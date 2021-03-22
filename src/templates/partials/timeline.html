@@ -6,6 +6,7 @@
 
 <!--Create the title of the graphic-->
 <center>150 Years of The Daily Californian</center>
+<br><br>
 
 <!-- Create a div where the graph will take place -->
 <div id="two_divs" style="display: table;">
@@ -55,7 +56,7 @@ var svg_content = d3.select("#timeline2")
           "translate(" + 50 + "," + margin.top + ")");
 
 // Parse the Data
-d3.csv("majors.csv", function(data) {
+d3.csv("timeline.csv", function(data) {
   // Add X axis. Scale linear creates an array of numbers from 0 to 100 that maps to the width of the page.
   var x = d3.scaleLinear()
     .domain([0, 100])
@@ -70,16 +71,16 @@ d3.csv("majors.csv", function(data) {
 
   // Y axis
   //Same as the X-axis, simply with different numbers.
-  var y = d3.scaleBand()
-    .range([ 0, height ])
-    .domain(data.map(function(d) { return d.group; }))
-    .padding(1);
+  var y = d3.scaleLinear()
+    .domain([1871, 2020])
+    .range([ 0, height ]);
+    //.padding(1);
 
   svg_timeline.append("g")
     .attr("class", "yaxis")
     .style("font-family", "benton-sans-bold")
-    .style("font-size", "18")
-    .call(d3.axisLeft(y).tickSize(0));
+    .style("font-size", "18");
+    //.call(d3.axisLeft(y).tickSize(0));
 
   // Lines
   // selectAll instructs the svg object to look for "myline" elements.
@@ -90,7 +91,7 @@ d3.csv("majors.csv", function(data) {
   svg_timeline.append("line")
       .attr("x1", function(d) { return 70; })
       .attr("x2", function(d) { return 70; })
-      .attr("y1", function(d) { return y("1871"); })
+      .attr("y1", function(d) { return y(1871); })
       .attr("y2", function(d) { return height; })
       .attr("stroke", "gray")
       .attr("stroke-width", "2px")
@@ -99,7 +100,7 @@ d3.csv("majors.csv", function(data) {
     .data(data)
     .enter().append("circle")
       .attr("cx", function(d) { return 70; })
-      .attr("cy", function(d) { return y(d.group); })
+      .attr("cy", function(d) { return y(+d.group); })
       .attr("group", function(d) { return d.group; })
       .attr("r", "15")
       .style("fill", "#69b3a2")
@@ -109,8 +110,21 @@ d3.csv("majors.csv", function(data) {
     .selectAll("text")
     .data(data)
     .enter().append("text")
+    .attr("x", 0)
+      .attr("y", function(d) { return y(+d.group); })
+      .attr("dy", 6)
+      .attr("id", "ylabel")
+      .style("font-family", "benton-sans-bold")
+      .style("font-size", "18")
+      .style("fill", "black")
+    .text(function(d) { return d.group })
+
+  svg_timeline.append("g")
+    .selectAll("text")
+    .data(data)
+    .enter().append("text")
     .attr("x", 100)
-      .attr("y", function(d) { return y(d.group); })
+      .attr("y", function(d) { return y(+d.group); })
       .attr("dy", 6)
       .attr("id", "timeline-content")
       .style("font-family", "benton-sans")
@@ -125,7 +139,7 @@ svg_timeline.selectAll("myrect")
     .enter()
     .append("rect")
       .attr("x", 0)
-    .attr("y", function(d) { return y(d.group) - 45; })
+    .attr("y", function(d) { return y(+d.group) - 45; })
       .attr("width", width)
       .attr("height", 100)
       .attr("fill", "gray")
@@ -152,7 +166,7 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 0)
-      .attr("y", function(d) {return y(d.group) - 25; })
+      .attr("y", function(d) {return y(+d.group) - 25; })
       .attr("width", width)
       .attr("height", 500)
       .attr("fill", "#d3d3d3")
@@ -169,16 +183,17 @@ svg_timeline.selectAll("myrect")
                 .attr("xlink:href", "ww1.png")
                 .attr("x", "0")
                 .attr("id", "img")
-                .attr("y", function(d) {return y(d.group) - 25; })
+                .attr("y", function(d) {return y(+d.group) - 25; })
                 .attr("width", "500")
                 .attr("height", "375");
 
+      svg_content.select("#timeline-text").remove();
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
       .attr("x", 10)
-        .attr("y", function(d) { return y(d.group) + 400; })
+        .attr("y", function(d) { return y(+d.group) + 400; })
         .attr("dy", 6)
         .attr("id", "timeline-text")
         .style("font-family", "benton-sans")
@@ -194,8 +209,8 @@ svg_timeline.selectAll("myrect")
       .attr("x1", -50)
       .attr("x2", 0)
       .attr("id", 'fancy-line')
-      .attr("y1", function(d) {return y(d.group); })
-      .attr("y2", function(d) {return y(d.group); })
+      .attr("y1", function(d) {return y(+d.group); })
+      .attr("y2", function(d) {return y(+d.group); })
       .attr("stroke", "#2d637f")
       .attr("stroke-width", "5px")
 
@@ -205,7 +220,7 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(d.group) - 45; })
+      .attr("y", function(d) {return y(+d.group) - 45; })
       .attr("width", width)
       .attr("height", 100)
       .attr("id", "clickedbox")
@@ -241,7 +256,7 @@ svg_timeline.selectAll("myrect")
 
   svg_timeline.selectAll('text#timeline-content').call(wrap, 600, 200);
     function showLabel_click(d) {
-     d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
+     d3.selectAll('#ylabel').each(function(d1, i) {
        d3.select(this)
          .style('fill', '#d3d3d3')
        })
@@ -258,8 +273,8 @@ svg_timeline.selectAll("myrect")
        }
      })
 
-     d3.selectAll('.tick>text').each(function(d1, i) {
-      if (d1 == d.group) {
+     d3.selectAll('#ylabel').each(function(d1, i) {
+      if (d1.group == d.group) {
        d3.select(this)
          .style('fill', 'black')
        }
@@ -267,15 +282,15 @@ svg_timeline.selectAll("myrect")
     }
 
     function showLabel_hover(d) {
-     d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
-       if (d1 != clicked) {
+     d3.selectAll('#ylabel').each(function(d1, i) {
+       if (d1.group != clicked) {
        d3.select(this)
          .style('fill', '#d3d3d3')
        }
        })
 
-     d3.selectAll('.tick>text').each(function(d1, i) {
-      if (d1 == d.group)  {
+     d3.selectAll('#ylabel').each(function(d1, i) {
+      if (d1.group == d.group)  {
        d3.select(this)
          .style('fill', 'black')
        }
@@ -290,7 +305,7 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(d.group) - 45; })
+      .attr("y", function(d) {return y(+d.group) - 45; })
       .attr("width", width)
       .attr("height", 100)
       .attr("id", "raised")
@@ -308,8 +323,8 @@ svg_timeline.selectAll("myrect")
     }
 
     function hideLabel(d) {
-     d3.selectAll('.yaxis').selectAll('.tick>text').each(function(d1, i) {
-       if (d1 != clicked) {
+     d3.selectAll('#ylabel').each(function(d1, i) {
+       if (d1.group != clicked) {
        d3.select(this)
          .style('fill', '#d3d3d3')
        }
