@@ -164,6 +164,7 @@ svg_timeline.selectAll("myrect")
 
     function addBox(d) {
       clicked = d.placement;
+      var boxheight = 500;
 
       svg_content.select("#timelinebox").remove()
       svg_content.selectAll('timelinebox')
@@ -173,7 +174,7 @@ svg_timeline.selectAll("myrect")
       .attr("x", 0)
       .attr("y", function(d) {return y(+d.placement) - 25; })
       .attr("width", width - 30)
-      .attr("height", 500)
+      .attr("height", boxheight)
       .attr("fill", "#e09e19")
       .attr("id", "timelinebox")
       .attr("opacity", 0.3)
@@ -188,7 +189,9 @@ svg_timeline.selectAll("myrect")
                 .attr("id", "img")
                 .attr("y", function(d) {return y(+d.placement) - 39; })
                 .attr("width", width - 30)
-                .attr("height", "375");
+                //.attr("height", "375");
+
+    console.log(svg_content.select('#img').node().height);
 
     svg_content.select("#timeline-text").remove();
     svg_content.append("g")
@@ -210,7 +213,7 @@ svg_timeline.selectAll("myrect")
       .data([d])
       .enter().append("text")
       .attr("x", 15)
-        .attr("y", function(d) { return y(+d.placement) + 470; })
+        .attr("y", function(d) { return y(+d.placement) + boxheight - 40; })
         .attr("dy", 6)
         .attr("id", "archive-link")
         .style("font-family", "benton-sans")
