@@ -3,6 +3,11 @@
 
 <!-- Load d3.js (relevant package)-->
 <script src="https://d3js.org/d3.v4.js"></script>
+<style>
+a {
+  text-decoration: underline;
+}
+</style>
 
 <!--Create the title of the graphic-->
 <center>150 Years of The Daily Californian</center>
@@ -72,7 +77,7 @@ d3.csv("timeline.csv", function(data) {
   // Y axis
   //Same as the X-axis, simply with different numbers.
   var y = d3.scaleLinear()
-    .domain([1871, 2020])
+    .domain([1908, 2030])
     .range([ 0, height ]);
     //.padding(1);
 
@@ -91,8 +96,8 @@ d3.csv("timeline.csv", function(data) {
   svg_timeline.append("line")
       .attr("x1", function(d) { return 70; })
       .attr("x2", function(d) { return 70; })
-      .attr("y1", function(d) { return y(1871); })
-      .attr("y2", function(d) { return height; })
+      .attr("y1", function(d) { return y(1908); })
+      .attr("y2", function(d) { return y(2021); })
       .attr("stroke", "gray")
       .attr("stroke-width", "2px")
 
@@ -100,37 +105,37 @@ d3.csv("timeline.csv", function(data) {
     .data(data)
     .enter().append("circle")
       .attr("cx", function(d) { return 70; })
-      .attr("cy", function(d) { return y(+d.group); })
-      .attr("group", function(d) { return d.group; })
+      .attr("cy", function(d) { return y(+d.placement); })
+      .attr("placement", function(d) { return d.placement; })
       .attr("r", "15")
-      .style("fill", "#69b3a2")
+      .style("fill", "#2d637f")
 
+
+  svg_timeline.append("g")
+    .selectAll("text")
+    .data(data)
+    .enter().append("text")
+    .attr("x", -75)
+      .attr("y", function(d) { return y(+d.placement); })
+      .attr("dy", 6)
+      .attr("id", "ylabel")
+      .style("font-family", "benton-sans-bold")
+      .style("font-size", "18")
+      .style("fill", "black")
+    .text(function(d) { return d.date })
 
   svg_timeline.append("g")
     .selectAll("text")
     .data(data)
     .enter().append("text")
     .attr("x", 0)
-      .attr("y", function(d) { return y(+d.group); })
-      .attr("dy", 6)
-      .attr("id", "ylabel")
-      .style("font-family", "benton-sans-bold")
-      .style("font-size", "18")
-      .style("fill", "black")
-    .text(function(d) { return d.group })
-
-  svg_timeline.append("g")
-    .selectAll("text")
-    .data(data)
-    .enter().append("text")
-    .attr("x", 100)
-      .attr("y", function(d) { return y(+d.group); })
+      .attr("y", function(d) { return y(+d.placement); })
       .attr("dy", 6)
       .attr("id", "timeline-content")
       .style("font-family", "benton-sans")
       .style("font-size", "16")
       .style("fill", "black")
-    .text(function(d) { return d.text })
+    .text(function(d) { return d.short })
 
 //Again, we select the rectangle objects. Since there are none, we add them.
 //These rectangles are entirely transparent and only exist so that text appears when the user hovers over them.
@@ -139,7 +144,7 @@ svg_timeline.selectAll("myrect")
     .enter()
     .append("rect")
       .attr("x", 0)
-    .attr("y", function(d) { return y(+d.group) - 45; })
+    .attr("y", function(d) { return y(+d.placement) - 45; })
       .attr("width", width)
       .attr("height", 100)
       .attr("fill", "gray")
@@ -158,7 +163,7 @@ svg_timeline.selectAll("myrect")
 
 
     function addBox(d) {
-      clicked = d.group;
+      clicked = d.placement;
 
       svg_content.select("#timelinebox").remove()
       svg_content.selectAll('timelinebox')
@@ -166,40 +171,56 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 0)
-      .attr("y", function(d) {return y(+d.group) - 25; })
-      .attr("width", width)
+      .attr("y", function(d) {return y(+d.placement) - 25; })
+      .attr("width", width - 30)
       .attr("height", 500)
-      .attr("fill", "#d3d3d3")
+      .attr("fill", "#e09e19")
       .attr("id", "timelinebox")
-      .style("opacity", 100)
-      .attr("stroke", "grey")
-      .attr("stroke-width", "1px")
+      .attr("opacity", 0.3)
 
       svg_content.select('#img').remove()
 
       var imgs = svg_content.append('g').selectAll("img").data([d]);
                 imgs.enter()
                 .append("image")
-                .attr("xlink:href", "ww1.png")
+                .attr("xlink:href", "images/" + d.visual)
                 .attr("x", "0")
                 .attr("id", "img")
-                .attr("y", function(d) {return y(+d.group) - 25; })
-                .attr("width", "500")
+                .attr("y", function(d) {return y(+d.placement) - 39; })
+                .attr("width", width - 30)
                 .attr("height", "375");
 
-      svg_content.select("#timeline-text").remove();
+    svg_content.select("#timeline-text").remove();
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
       .attr("x", 10)
-        .attr("y", function(d) { return y(+d.group) + 400; })
+        .attr("y", function(d) { return y(+d.placement) + 400; })
         .attr("dy", 6)
         .attr("id", "timeline-text")
         .style("font-family", "benton-sans")
         .style("font-size", "16")
         .style("fill", "black")
-      .text(function(d) { return d.text })
+      .html(function(d) { return d.long })
+
+    svg_content.select("#archive-link").remove();
+    svg_content.append("g")
+      .selectAll("text")
+      .data([d])
+      .enter().append("text")
+      .attr("x", 15)
+        .attr("y", function(d) { return y(+d.placement) + 470; })
+        .attr("dy", 6)
+        .attr("id", "archive-link")
+        .style("font-family", "benton-sans")
+        .style("font-size", "16")
+        .style("fill", "black")
+        .html(function(d) {
+          var link = d.link;
+          return "<a href=" + link + ">Read the article here.</a>";
+        })
+
 
       svg_content.selectAll('#fancy-line').remove();
       svg_content.selectAll('fancy-line')
@@ -209,8 +230,8 @@ svg_timeline.selectAll("myrect")
       .attr("x1", -50)
       .attr("x2", 0)
       .attr("id", 'fancy-line')
-      .attr("y1", function(d) {return y(+d.group); })
-      .attr("y2", function(d) {return y(+d.group); })
+      .attr("y1", function(d) {return y(+d.placement); })
+      .attr("y2", function(d) {return y(+d.placement); })
       .attr("stroke", "#2d637f")
       .attr("stroke-width", "5px")
 
@@ -220,33 +241,33 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(+d.group) - 45; })
+      .attr("y", function(d) {return y(+d.placement) - 45; })
       .attr("width", width)
-      .attr("height", 100)
+      .attr("height", 80)
       .attr("id", "clickedbox")
       .style("opacity", 100)
       .attr("fill", "#dedede")
       svg_timeline.select("#clickedbox").lower()
-  svg_content.selectAll('text#timeline-text').call(wrap, 500, 20);
+  svg_content.selectAll('text#timeline-text').call(wrap, 450, 20);
     }
 
   function wrap(text, width, transform) {
   text.each(function() {
     var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
+        words = text.html().split(/\s+/).reverse(),
         word,
         line = [],
         lineNumber = 0,
         lineHeight = 1.1, // ems
         y = text.attr("y") - 100,
         dy = parseFloat(text.attr("dy")),
-        tspan = text.text(null).append("tspan").attr("x", transform).attr("y", y).attr("dy", dy + "em");
+        tspan = text.html(null).append("tspan").attr("x", transform).attr("y", y).attr("dy", dy + "em");
     while (word = words.pop()) {
       line.push(word);
-      tspan.text(line.join(" "));
+      tspan.html(line.join(" "));
       if (tspan.node().getComputedTextLength() > width) {
         line.pop();
-        tspan.text(line.join(" "));
+        tspan.html(line.join(" "));
         line = [word];
         tspan = text.append("tspan").attr("x", transform).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
       }
@@ -254,7 +275,7 @@ svg_timeline.selectAll("myrect")
   });
 }
 
-  svg_timeline.selectAll('text#timeline-content').call(wrap, 600, 200);
+  svg_timeline.selectAll('#timeline-content').call(wrap, 300, 120);
     function showLabel_click(d) {
      d3.selectAll('#ylabel').each(function(d1, i) {
        d3.select(this)
@@ -267,14 +288,14 @@ svg_timeline.selectAll("myrect")
        })
 
      d3.selectAll('circle').each(function(c, i) {
-      if (c.group == d.group) {
+      if (c.placement == d.placement) {
        d3.select(this)
-         .style('fill', '#69b3a2')
+         .style('fill', '#2d637f')
        }
      })
 
      d3.selectAll('#ylabel').each(function(d1, i) {
-      if (d1.group == d.group) {
+      if (d1.placement == d.placement) {
        d3.select(this)
          .style('fill', 'black')
        }
@@ -283,14 +304,14 @@ svg_timeline.selectAll("myrect")
 
     function showLabel_hover(d) {
      d3.selectAll('#ylabel').each(function(d1, i) {
-       if (d1.group != clicked) {
+       if (d1.placement != clicked) {
        d3.select(this)
          .style('fill', '#d3d3d3')
        }
        })
 
      d3.selectAll('#ylabel').each(function(d1, i) {
-      if (d1.group == d.group)  {
+      if (d1.placement == d.placement)  {
        d3.select(this)
          .style('fill', 'black')
        }
@@ -305,9 +326,9 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(+d.group) - 45; })
+      .attr("y", function(d) {return y(+d.placement) - 45; })
       .attr("width", width)
-      .attr("height", 100)
+      .attr("height", 80)
       .attr("id", "raised")
       .style("opacity", 100)
       .attr("fill", "#dedede")
@@ -324,9 +345,16 @@ svg_timeline.selectAll("myrect")
 
     function hideLabel(d) {
      d3.selectAll('#ylabel').each(function(d1, i) {
-       if (d1.group != clicked) {
+       if (d1.placement != clicked) {
        d3.select(this)
          .style('fill', '#d3d3d3')
+       }
+       })
+
+     d3.selectAll('#ylabel').each(function(d1, i) {
+       if (clicked == "none") {
+       d3.select(this)
+         .style('fill', 'black')
        }
        })
       svg_timeline.select("#raised").each(function(d1, i) {

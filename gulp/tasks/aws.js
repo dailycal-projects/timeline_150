@@ -14,8 +14,8 @@ const revAll = require('gulp-rev-all');
 const querystring = require('querystring');
 
 module.exports = () => {
-  const target = argv.production ? 
-    'projects.dailycal.org' : 
+  const target = argv.production ?
+    'projects.dailycal.org' :
     'stage-projects.dailycal.org';
 
   const region = 'us-west-1';
@@ -112,7 +112,7 @@ module.exports = () => {
 
         const q = querystring.stringify({ q: metaUrl });
         if (argv.production) {
-          open(`https://developers.facebook.com/tools/debug/sharing/?${q}`);        
+          open(`https://developers.facebook.com/tools/debug/sharing/?${q}`);
         }
         open(metaUrl);
       }, 1000);

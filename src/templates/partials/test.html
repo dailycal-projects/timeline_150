@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<style>
+a {
+  background:#44ff22;
+  color:blue;
+  font-size:15px;
+  padding:8px 12px;
+  border-radius:3px;
+  text-decoration:underline;
+  display: block; /* Added */
+}
+</style>
 
 <script src="https://d3js.org/d3.v4.js"></script>
     <div id="timeline" ></div>
@@ -11,14 +22,22 @@ var svg= d3.select("body")
     .attr("width", 500)
     .attr("height", 500);
 
-            var imgs = svg.append('g').selectAll("img").data([0]);
-                imgs.enter()
-                .append("image")
-                .attr("xlink:href", "ww1.png")
-                .attr("x", "50")
-                .attr("y", "0")
-                .attr("width", "200")
-                .attr("height", "200");
+//            var imgs = svg.append('g').selectAll("img").data([0]);
+//                imgs.enter()
+//                .append("image")
+//                .attr("xlink:href", "ww1.png")
+//                .attr("x", "50")
+//                .attr("y", "0")
+//                .attr("width", "200")
+//                .attr("height", "200");
+//
+svg.append('g').selectAll('text').data([0]).enter().append("text")
+      .attr("x", 100)
+      .attr("y", 100)
+      .attr("dy", 6)
+      .html(function(d,i) {
+        return 'iobio <a href=http://alzhao.com/>alzhao</a>';
+       })
+//svg.html("ioweb").style("left", "200px").style("top", "200px")
 
 </script>
-<img src="ww1.png" x="0" y="0" width="400" height="300"></img>
