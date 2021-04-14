@@ -85,13 +85,6 @@ d3.csv("timeline.csv", function(data) {
     .attr("class", "yaxis")
     .style("font-family", "benton-sans-bold")
     .style("font-size", "18");
-    //.call(d3.axisLeft(y).tickSize(0));
-
-  // Lines
-  // selectAll instructs the svg object to look for "myline" elements.
-  //None are found, since we haven't added any lines yet.
-  // Calling "data" binds the data variable to our selection.
-  // Since the selection is empty, D3 creates a new line for each data point "d".
 
   svg_timeline.append("line")
       .attr("x1", function(d) { return 70; })
@@ -137,8 +130,6 @@ d3.csv("timeline.csv", function(data) {
       .style("fill", "black")
     .text(function(d) { return d.short })
 
-//Again, we select the rectangle objects. Since there are none, we add them.
-//These rectangles are entirely transparent and only exist so that text appears when the user hovers over them.
 svg_timeline.selectAll("myrect")
     .data(data)
     .enter()
@@ -152,7 +143,7 @@ svg_timeline.selectAll("myrect")
       .attr("stroke", "white")
       .attr("stroke-width", "1px")
       .on("click", function(d) {
-            addBox(d);
+            load_img(d);
             showLabel_click(d);
           })
       .on("mouseover", function(d) {
@@ -161,10 +152,29 @@ svg_timeline.selectAll("myrect")
       .on("mousemove", moveLabel)
     .on("mouseout", function(d) { hideLabel(d); })
 
+    function load_img(d) {
+      svg_content.select('#img').remove()
+      var imgs = svg_content.append('g').selectAll("img").data([d]);
+                imgs.enter()
+                .append("image")
+                .attr("xlink:href", "images/" + d.visual)
+                .attr("x", "0")
+                .attr("id", "img")
+                .attr("y", function(d) {return y(+d.placement) - 39; })
+                .attr("width", width - 30);
 
-    function addBox(d) {
+      svg_content.select('#img').on("load", function(d) {
+        addBox(d, get_height());
+      });
+      function get_height() {
+        img_height = svg_content.select('#img').node().getBoundingClientRect().height;
+        return img_height;
+      }
+    }
+
+    function addBox(d, img_height) {
       clicked = d.placement;
-      var boxheight = 500;
+      var boxheight = img_height + 100;
 
       svg_content.select("#timelinebox").remove()
       svg_content.selectAll('timelinebox')
@@ -177,21 +187,7 @@ svg_timeline.selectAll("myrect")
       .attr("height", boxheight)
       .attr("fill", "#e09e19")
       .attr("id", "timelinebox")
-      .attr("opacity", 0.3)
-
-      svg_content.select('#img').remove()
-
-      var imgs = svg_content.append('g').selectAll("img").data([d]);
-                imgs.enter()
-                .append("image")
-                .attr("xlink:href", "images/" + d.visual)
-                .attr("x", "0")
-                .attr("id", "img")
-                .attr("y", function(d) {return y(+d.placement) - 39; })
-                .attr("width", width - 30)
-                //.attr("height", "375");
-
-    console.log(svg_content.select('#img').node().height);
+      .attr("opacity", 0.3).lower()
 
     svg_content.select("#timeline-text").remove();
     svg_content.append("g")
@@ -199,7 +195,7 @@ svg_timeline.selectAll("myrect")
       .data([d])
       .enter().append("text")
       .attr("x", 10)
-        .attr("y", function(d) { return y(+d.placement) + 400; })
+        .attr("y", function(d) { return y(+d.placement) + boxheight - 100; })
         .attr("dy", 6)
         .attr("id", "timeline-text")
         .style("font-family", "benton-sans")
@@ -223,6 +219,7 @@ svg_timeline.selectAll("myrect")
           var link = d.link;
           return "<a href=" + link + ">Read the article here.</a>";
         })
+  svg_content.selectAll('text#archive-link').call(wrap, 450, 20);
 
 
       svg_content.selectAll('#fancy-line').remove();
