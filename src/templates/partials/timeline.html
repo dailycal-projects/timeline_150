@@ -10,8 +10,7 @@ a {
 </style>
 
 <!--Create the title of the graphic-->
-<center>150 Years of The Daily Californian</center>
-<br><br>
+<!--<center>150 Years of The Daily Californian</center>-->
 
 <!-- Create a div where the graph will take place -->
 <div id="two_divs" style="display: table;">
@@ -27,7 +26,9 @@ var clicked = "none";
 
 var margin = {top: 20, right: 30, bottom: 30, left: 0},
     width = 500,
-    height = 7000 - margin.top - margin.bottom;
+  height = 10000 - margin.top - margin.bottom;
+bigfont = 18;
+medfont = 16;
 
 // Append the svg_timeline object to the div of the page.
 //An SVG is a "Scalable Vector Graphic" -- like a canvas for us to add 2-D shapes onto.
@@ -38,7 +39,7 @@ var svg_timeline = d3.select("#timeline1")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform",
-          "translate(" + 100 + "," + margin.top + ")");
+          "translate(" + 120 + "," + margin.top + ")");
 
             var imgs = svg_timeline.selectAll("img").data([0]);
                 imgs.enter()
@@ -61,7 +62,7 @@ var svg_content = d3.select("#timeline2")
           "translate(" + 50 + "," + margin.top + ")");
 
 // Parse the Data
-d3.csv("timeline.csv", function(data) {
+d3.csv("timeline2.csv", function(data) {
   // Add X axis. Scale linear creates an array of numbers from 0 to 100 that maps to the width of the page.
   var x = d3.scaleLinear()
     .domain([0, 100])
@@ -90,7 +91,7 @@ d3.csv("timeline.csv", function(data) {
       .attr("x1", function(d) { return 70; })
       .attr("x2", function(d) { return 70; })
       .attr("y1", function(d) { return y(1908); })
-      .attr("y2", function(d) { return y(2021); })
+      .attr("y2", function(d) { return y(2022); })
       .attr("stroke", "gray")
       .attr("stroke-width", "2px")
 
@@ -113,7 +114,7 @@ d3.csv("timeline.csv", function(data) {
       .attr("dy", 6)
       .attr("id", "ylabel")
       .style("font-family", "benton-sans-bold")
-      .style("font-size", "18")
+      .style("font-size", bigfont)
       .style("fill", "black")
     .text(function(d) { return d.date })
 
@@ -123,10 +124,10 @@ d3.csv("timeline.csv", function(data) {
     .enter().append("text")
     .attr("x", 0)
       .attr("y", function(d) { return y(+d.placement); })
-      .attr("dy", 6)
+      .attr("dy", 5.5)
       .attr("id", "timeline-content")
       .style("font-family", "benton-sans")
-      .style("font-size", "16")
+      .style("font-size", bigfont)
       .style("fill", "black")
     .text(function(d) { return d.short })
 
@@ -137,7 +138,7 @@ svg_timeline.selectAll("myrect")
       .attr("x", 0)
     .attr("y", function(d) { return y(+d.placement) - 45; })
       .attr("width", width)
-      .attr("height", 100)
+      .attr("height", 132)
       .attr("fill", "gray")
       .style("opacity", 0)
       .attr("stroke", "white")
@@ -154,6 +155,12 @@ svg_timeline.selectAll("myrect")
 
     function load_img(d) {
       svg_content.select('#img').remove()
+      svg_content.select("#timelinebox").remove()
+      svg_content.select("#timeline-text").remove();
+      svg_content.select("#archive-link").remove();
+      svg_content.select("#photo-credit").remove();
+      svg_content.selectAll('#fancy-line').remove();
+      svg_timeline.select("#clickedbox").remove();
       var imgs = svg_content.append('g').selectAll("img").data([d]);
                 imgs.enter()
                 .append("image")
@@ -174,9 +181,9 @@ svg_timeline.selectAll("myrect")
 
     function addBox(d, img_height) {
       clicked = d.placement;
-      var boxheight = img_height + 100;
+      boxmargin = 230
+      var boxheight = img_height + boxmargin;
 
-      svg_content.select("#timelinebox").remove()
       svg_content.selectAll('timelinebox')
       .data([d])
       .enter()
@@ -189,40 +196,57 @@ svg_timeline.selectAll("myrect")
       .attr("id", "timelinebox")
       .attr("opacity", 0.3).lower()
 
-    svg_content.select("#timeline-text").remove();
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
       .attr("x", 10)
-        .attr("y", function(d) { return y(+d.placement) + boxheight - 100; })
+        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin - 20; })
         .attr("dy", 6)
-        .attr("id", "timeline-text")
+        .attr("id", "photo-credit")
         .style("font-family", "benton-sans")
-        .style("font-size", "16")
-        .style("fill", "black")
-      .html(function(d) { return d.long })
+        .style("font-size", "18")
+        .style("fill", "gray")
+      .html(function(d) { return d.credit })
 
-    svg_content.select("#archive-link").remove();
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
-      .attr("x", 15)
-        .attr("y", function(d) { return y(+d.placement) + boxheight - 40; })
+      .attr("x", 10)
+        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin + 20; })
         .attr("dy", 6)
-        .attr("id", "archive-link")
+        .attr("id", "timeline-text")
         .style("font-family", "benton-sans")
-        .style("font-size", "16")
+        .style("font-size", "18")
         .style("fill", "black")
-        .html(function(d) {
-          var link = d.link;
-          return "<a href=" + link + ">Read the article here.</a>";
-        })
-  svg_content.selectAll('text#archive-link').call(wrap, 450, 20);
+      .html(function(d) { return d.long })
+
+      if (d.link.length > 0 ) {
+          svg_content.append("g")
+            .selectAll("text")
+            .data([d])
+            .enter().append("text")
+            .attr("x", 15)
+              .attr("y", function(d) { return y(+d.placement) + boxheight - 40; })
+              .attr("dy", 6)
+              .attr("id", "archive-link")
+              .style("font-family", "benton-sans")
+              .style("font-size", "18")
+              .style("fill", "black")
+              .html(function(d) {
+                var link = d.link;
+                if (d.short === '"Visit us on-line"') {
+                  tmp = ">Read the ad here.</a>"
+                } else {
+                  tmp = ">Read the article here.</a>"
+                }
+                return "<a href=" + link + tmp;
+              })
+          svg_content.selectAll('text#archive-link').call(wrap, 450, 20);
+      }
 
 
-      svg_content.selectAll('#fancy-line').remove();
       svg_content.selectAll('fancy-line')
       .data([d])
       .enter()
@@ -235,7 +259,6 @@ svg_timeline.selectAll("myrect")
       .attr("stroke", "#2d637f")
       .attr("stroke-width", "5px")
 
-      svg_timeline.select("#clickedbox").remove();
       svg_timeline.selectAll('clickedbox')
       .data([d])
       .enter()
@@ -243,7 +266,7 @@ svg_timeline.selectAll("myrect")
       .attr("x", 100)
       .attr("y", function(d) {return y(+d.placement) - 45; })
       .attr("width", width)
-      .attr("height", 80)
+      .attr("height", 132)
       .attr("id", "clickedbox")
       .style("opacity", 100)
       .attr("fill", "#dedede")
@@ -275,7 +298,7 @@ svg_timeline.selectAll("myrect")
   });
 }
 
-  svg_timeline.selectAll('#timeline-content').call(wrap, 300, 120);
+  svg_timeline.selectAll('#timeline-content').call(wrap, 240, 120);
     function showLabel_click(d) {
      d3.selectAll('#ylabel').each(function(d1, i) {
        d3.select(this)
@@ -328,7 +351,7 @@ svg_timeline.selectAll("myrect")
       .attr("x", 100)
       .attr("y", function(d) {return y(+d.placement) - 45; })
       .attr("width", width)
-      .attr("height", 80)
+      .attr("height", 132)
       .attr("id", "raised")
       .style("opacity", 100)
       .attr("fill", "#dedede")

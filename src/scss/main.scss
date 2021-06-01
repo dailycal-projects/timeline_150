@@ -12,7 +12,6 @@
 @import 'elements';
 @import 'story';
 @import 'fonts';
-@import 'line_graph';
 @import 'nerd-box';
 @import 'refer';
 @import 'navigation';
@@ -25,7 +24,6 @@
 @import 'comments';
 @import 'share';
 @import 'credits';
-@import 'graphics';
 
 .dc-correction {
 	font-style: italic;
@@ -117,96 +115,25 @@ h4 {
 
 @media screen and (max-width: 900px) {
   svg {
-    zoom: 0.7;
+    zoom: 0.8;
   }
 }
 
 @media screen and (max-width: 600px) {
   svg {
-    zoom: 0.55;
+    zoom: 0.7;
   }
 }
 
 @media screen and (max-width: 500px) {
   svg {
-    zoom: 0.45;
+    zoom: 0.6;
   }
 }
 
 @media screen and (max-width: 400px) {
-  svg {
-    zoom: 0.37;
-  }
-}
-
-@media screen and (max-width: 400px) {
-  #stacked_bar {
-  svg {
-    zoom: 0.33;
-  }
-  }
-}
-
-@media screen and (max-width: 980px) {
-  #line_stops {
-  svg {
-    zoom: 0.9;
-  }
-  }
-}
-
-@media screen and (max-width: 980px) {
-  #line_search {
-  svg {
-    zoom: 0.9;
-  }
-  }
-}
-@media screen and (max-width: 900px) {
-  #line_stops {
-  svg {
-    zoom: 0.7;
-  }
-  }
-}
-
-@media screen and (max-width: 900px) {
-  #line_search {
-  svg {
-    zoom: 0.7;
-  }
-  }
-}
-
-@media screen and (max-width: 700px) {
-  #line_stops {
   svg {
     zoom: 0.5;
-  }
-  }
-}
-
-@media screen and (max-width: 700px) {
-  #line_search {
-  svg {
-    zoom: 0.5;
-  }
-  }
-}
-
-@media screen and (max-width: 400px) {
-  #line_stops {
-  svg {
-    zoom: 0.32;
-  }
-  }
-}
-
-@media screen and (max-width: 400px) {
-  #line_search {
-  svg {
-    zoom: 0.32;
-  }
   }
 }
 //@media screen and (max-width: 1500px) {
