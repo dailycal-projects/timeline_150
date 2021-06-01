@@ -192,9 +192,34 @@ svg_timeline.selectAll("myrect")
       .attr("y", function(d) {return y(+d.placement) - 25; })
       .attr("width", width - 30)
       .attr("height", boxheight)
-      .attr("fill", "#e09e19")
+      .attr("fill", "#f3f3f3")
       .attr("id", "timelinebox")
-      .attr("opacity", 0.3).lower()
+      .attr("opacity", 1).lower()
+
+      svg_content.selectAll('timelinebox2')
+      .data([d])
+      .enter()
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", function(d) {return y(+d.placement) - 40 + img_height; })
+      .attr("width", width - 30)
+      .attr("height", 8)
+      .attr("fill", "#003262")
+      .attr("id", "timelinebox2")
+      .attr("opacity", 0.7)
+
+     // svg_content.selectAll('timelinebox2')
+     // .data([d])
+     // .enter()
+     // .append("rect")
+     // .attr("x", -10)
+     // .attr("y", function(d) {return y(+d.placement) - 45; })
+     // .attr("width", width - 15)
+     // .attr("height", boxheight + 30)
+     // .attr("fill", "#003262")
+     // .attr("id", "timelinebox")
+     // .attr("opacity", 0.5).lower()
+
 
     svg_content.append("g")
       .selectAll("text")
@@ -238,6 +263,8 @@ svg_timeline.selectAll("myrect")
                 var link = d.link;
                 if (d.short === '"Visit us on-line"') {
                   tmp = ">Read the ad here.</a>"
+                } else if (d.short === '150th Anniversary') {
+                  tmp = ">Read the special issue here.</a>"
                 } else {
                   tmp = ">Read the article here.</a>"
                 }
