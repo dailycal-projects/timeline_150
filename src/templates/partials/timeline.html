@@ -24,11 +24,23 @@ a {
 let pageWidth = $(window).width();
 var clicked = "none";
 
-var margin = {top: 20, right: 30, bottom: 30, left: 0},
+var margin = {top: 100, right: 30, bottom: 30, left: 0},
     width = 500,
   height = 10000 - margin.top - margin.bottom;
-bigfont = 18;
-medfont = 16;
+datefont = bigfont = 18;
+medfont = 18;
+dy = 5.5;
+if (pageWidth < 600) {
+  bigfont=21;
+  medfont = 19;
+  dy = 4.5;
+}
+if (pageWidth < 400) {
+  bigfont=26;
+  datefont=23;
+  medfont = 18;
+  dy = 3.75;
+}
 
 // Append the svg_timeline object to the div of the page.
 //An SVG is a "Scalable Vector Graphic" -- like a canvas for us to add 2-D shapes onto.
@@ -44,7 +56,6 @@ var svg_timeline = d3.select("#timeline1")
             var imgs = svg_timeline.selectAll("img").data([0]);
                 imgs.enter()
                 .append("svg:img")
-                .attr("xlink:href", "https://drive.google.com/file/d/1i4ZFwEa7G47VncdUWPkjeo6E3wq-SRDp/view?usp=sharing")
                 .attr("x", "60")
                 .attr("y", "60")
                 .attr("width", "20")
@@ -88,8 +99,8 @@ d3.csv("timeline2.csv", function(data) {
     .style("font-size", "18");
 
   svg_timeline.append("line")
-      .attr("x1", function(d) { return 70; })
-      .attr("x2", function(d) { return 70; })
+      .attr("x1", function(d) { return 85; })
+      .attr("x2", function(d) { return 85; })
       .attr("y1", function(d) { return y(1908); })
       .attr("y2", function(d) { return y(2022); })
       .attr("stroke", "gray")
@@ -98,7 +109,7 @@ d3.csv("timeline2.csv", function(data) {
   svg_timeline.selectAll("timeline-circle")
     .data(data)
     .enter().append("circle")
-      .attr("cx", function(d) { return 70; })
+      .attr("cx", function(d) { return 85; })
       .attr("cy", function(d) { return y(+d.placement); })
       .attr("placement", function(d) { return d.placement; })
       .attr("r", "15")
@@ -114,7 +125,7 @@ d3.csv("timeline2.csv", function(data) {
       .attr("dy", 6)
       .attr("id", "ylabel")
       .style("font-family", "benton-sans-bold")
-      .style("font-size", bigfont)
+      .style("font-size", datefont)
       .style("fill", "black")
     .text(function(d) { return d.date })
 
@@ -124,7 +135,7 @@ d3.csv("timeline2.csv", function(data) {
     .enter().append("text")
     .attr("x", 0)
       .attr("y", function(d) { return y(+d.placement); })
-      .attr("dy", 5.5)
+      .attr("dy", dy)
       .attr("id", "timeline-content")
       .style("font-family", "benton-sans")
       .style("font-size", bigfont)
@@ -136,10 +147,10 @@ svg_timeline.selectAll("myrect")
     .enter()
     .append("rect")
       .attr("x", 0)
-    .attr("y", function(d) { return y(+d.placement) - 45; })
+    .attr("y", function(d) { return y(+d.placement) - 60; })
       .attr("width", width)
       .attr("height", 132)
-      .attr("fill", "gray")
+      .attr("fill", "#f3f3f3")
       .style("opacity", 0)
       .attr("stroke", "white")
       .attr("stroke-width", "1px")
@@ -153,9 +164,13 @@ svg_timeline.selectAll("myrect")
       .on("mousemove", moveLabel)
     .on("mouseout", function(d) { hideLabel(d); })
 
+    load_img(data[0]);
+    showLabel_click(data[0]);
+
     function load_img(d) {
       svg_content.select('#img').remove()
       svg_content.select("#timelinebox").remove()
+      svg_content.select("#timelinebar").remove()
       svg_content.select("#timeline-text").remove();
       svg_content.select("#archive-link").remove();
       svg_content.select("#photo-credit").remove();
@@ -167,7 +182,7 @@ svg_timeline.selectAll("myrect")
                 .attr("xlink:href", "images/" + d.visual)
                 .attr("x", "0")
                 .attr("id", "img")
-                .attr("y", function(d) {return y(+d.placement) - 39; })
+                .attr("y", function(d) {return y(+d.placement) - 60; })
                 .attr("width", width - 30);
 
       svg_content.select('#img').on("load", function(d) {
@@ -189,49 +204,50 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 0)
-      .attr("y", function(d) {return y(+d.placement) - 25; })
+      .attr("y", function(d) {return y(+d.placement) - 5 + img_height; })
       .attr("width", width - 30)
-      .attr("height", boxheight)
+      .attr("height", boxmargin)
       .attr("fill", "#f3f3f3")
       .attr("id", "timelinebox")
       .attr("opacity", 1).lower()
 
-      svg_content.selectAll('timelinebox2')
+      svg_content.selectAll('timelinebar')
       .data([d])
       .enter()
       .append("rect")
       .attr("x", 0)
-      .attr("y", function(d) {return y(+d.placement) - 40 + img_height; })
+      .attr("y", function(d) {return y(+d.placement) - 30 + img_height; })
       .attr("width", width - 30)
-      .attr("height", 8)
+      .attr("height", 30)
       .attr("fill", "#003262")
-      .attr("id", "timelinebox2")
-      .attr("opacity", 0.7)
+      .attr("id", "timelinebar")
+      .attr("opacity", 0.8)
 
-     // svg_content.selectAll('timelinebox2')
-     // .data([d])
-     // .enter()
-     // .append("rect")
-     // .attr("x", -10)
-     // .attr("y", function(d) {return y(+d.placement) - 45; })
-     // .attr("width", width - 15)
-     // .attr("height", boxheight + 30)
-     // .attr("fill", "#003262")
-     // .attr("id", "timelinebox")
-     // .attr("opacity", 0.5).lower()
-
+    svg_content.append('g')
+    .selectAll('.dummyText')     // declare a new CSS class 'dummyText'
+    .data([d])
+    .enter()                     // create new element
+    .append("text")              // add element to class
+    .attr("font-family", "benton-sans")
+    .attr("font-size", "18")
+    .text(function(d) { return d.credit})
+    .each(function(d,i) {
+        textWidth = this.getComputedTextLength()
+        this.remove() // remove them just after displaying them
+        console.log(textWidth);
+    })
 
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
-      .attr("x", 10)
-        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin - 20; })
+      .attr("x", width - 40 - textWidth)
+        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin - 15; })
         .attr("dy", 6)
         .attr("id", "photo-credit")
         .style("font-family", "benton-sans")
         .style("font-size", "18")
-        .style("fill", "gray")
+        .style("fill", "white")
       .html(function(d) { return d.credit })
 
     svg_content.append("g")
@@ -243,7 +259,7 @@ svg_timeline.selectAll("myrect")
         .attr("dy", 6)
         .attr("id", "timeline-text")
         .style("font-family", "benton-sans")
-        .style("font-size", "18")
+        .style("font-size", medfont)
         .style("fill", "black")
       .html(function(d) { return d.long })
 
@@ -257,7 +273,7 @@ svg_timeline.selectAll("myrect")
               .attr("dy", 6)
               .attr("id", "archive-link")
               .style("font-family", "benton-sans")
-              .style("font-size", "18")
+              .style("font-size", medfont)
               .style("fill", "black")
               .html(function(d) {
                 var link = d.link;
@@ -291,14 +307,16 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(+d.placement) - 45; })
-      .attr("width", width)
+      .attr("y", function(d) {return y(+d.placement) - 60; })
+      .attr("rx", 30)
+      .attr("ry", 30)
+      .attr("width", 310)
       .attr("height", 132)
       .attr("id", "clickedbox")
       .style("opacity", 100)
-      .attr("fill", "#dedede")
+      .attr("fill", "#f3f3f3")
       svg_timeline.select("#clickedbox").lower()
-  svg_content.selectAll('text#timeline-text').call(wrap, 450, 20);
+  svg_content.selectAll('text#timeline-text').call(wrap, 430, 20);
     }
 
   function wrap(text, width, transform) {
@@ -327,15 +345,15 @@ svg_timeline.selectAll("myrect")
 
   svg_timeline.selectAll('#timeline-content').call(wrap, 240, 120);
     function showLabel_click(d) {
-     d3.selectAll('#ylabel').each(function(d1, i) {
-       d3.select(this)
-         .style('fill', '#d3d3d3')
-       })
+     //d3.selectAll('#ylabel').each(function(d1, i) {
+     //  d3.select(this)
+     //    .style('fill', '#d3d3d3')
+     //  })
 
-     d3.selectAll('circle').each(function(d1, i) {
-       d3.select(this)
-         .style('fill', '#d3d3d3')
-       })
+     //d3.selectAll('circle').each(function(d1, i) {
+     //  d3.select(this)
+     //    .style('fill', '#d3d3d3')
+     //  })
 
      d3.selectAll('circle').each(function(c, i) {
       if (c.placement == d.placement) {
@@ -353,12 +371,12 @@ svg_timeline.selectAll("myrect")
     }
 
     function showLabel_hover(d) {
-     d3.selectAll('#ylabel').each(function(d1, i) {
-       if (d1.placement != clicked) {
-       d3.select(this)
-         .style('fill', '#d3d3d3')
-       }
-       })
+     //d3.selectAll('#ylabel').each(function(d1, i) {
+     //  if (d1.placement != clicked) {
+     //  d3.select(this)
+     //    .style('fill', '#d3d3d3')
+     //  }
+     //  })
 
      d3.selectAll('#ylabel').each(function(d1, i) {
       if (d1.placement == d.placement)  {
@@ -376,12 +394,14 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 100)
-      .attr("y", function(d) {return y(+d.placement) - 45; })
-      .attr("width", width)
+      .attr("y", function(d) {return y(+d.placement) - 60; })
+      .attr("rx", 30)
+      .attr("ry", 30)
+      .attr("width", 310)
       .attr("height", 132)
       .attr("id", "raised")
       .style("opacity", 100)
-      .attr("fill", "#dedede")
+      .attr("fill", "#f3f3f3")
       svg_timeline.select("#raised").lower()
 
     }
@@ -394,12 +414,12 @@ svg_timeline.selectAll("myrect")
     }
 
     function hideLabel(d) {
-     d3.selectAll('#ylabel').each(function(d1, i) {
-       if (d1.placement != clicked) {
-       d3.select(this)
-         .style('fill', '#d3d3d3')
-       }
-       })
+     //d3.selectAll('#ylabel').each(function(d1, i) {
+     //  if (d1.placement != clicked) {
+     //  d3.select(this)
+     //    .style('fill', '#d3d3d3')
+     //  }
+     //  })
 
      d3.selectAll('#ylabel').each(function(d1, i) {
        if (clicked == "none") {
@@ -413,5 +433,4 @@ svg_timeline.selectAll("myrect")
     }
 
 })
-
 </script>
