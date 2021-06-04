@@ -1,9 +1,9 @@
-# voting rates
+# 150th anniversary timeline
 
-| Title | voting-rates |
+| Title | timeline |
 |-|-|
-| Developers    | [Alex Zhao](mailto:axyzhao@berkeley.edu) |
+| Developers    | [Alex Zhao](mailto:axyzhao@berkeley.edu) | Maia Alviar (mailto:malviar@dailycal.org)
 | Link | [http://projects.dailycal.org/2021/timeline](http://projects.dailycal.org/2021/timeline) |
 
 
-©2020 The Daily Californian
+©2021 The Daily Californian
