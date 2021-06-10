@@ -29,6 +29,8 @@ var margin = {top: 100, right: 30, bottom: 30, left: 0},
   height = 10000 - margin.top - margin.bottom;
 datefont = bigfont = 18;
 medfont = 18;
+hoverheight=132;
+boxmargin = 230
 dy = 5.5;
 if (pageWidth < 600) {
   bigfont=21;
@@ -38,8 +40,10 @@ if (pageWidth < 600) {
 if (pageWidth < 400) {
   bigfont=26;
   datefont=23;
-  medfont = 18;
+  medfont = 23;
   dy = 3.75;
+  hoverheight=160;
+  boxmargin = 350;
 }
 
 // Append the svg_timeline object to the div of the page.
@@ -149,7 +153,7 @@ svg_timeline.selectAll("myrect")
       .attr("x", 0)
     .attr("y", function(d) { return y(+d.placement) - 60; })
       .attr("width", width)
-      .attr("height", 132)
+      .attr("height", hoverheight)
       .attr("fill", "#f3f3f3")
       .style("opacity", 0)
       .attr("stroke", "white")
@@ -183,7 +187,7 @@ svg_timeline.selectAll("myrect")
                 .attr("x", "0")
                 .attr("id", "img")
                 .attr("y", function(d) {return y(+d.placement) - 60; })
-                .attr("width", width - 30);
+                .attr("width", width - 25);
 
       svg_content.select('#img').on("load", function(d) {
         addBox(d, get_height());
@@ -196,7 +200,6 @@ svg_timeline.selectAll("myrect")
 
     function addBox(d, img_height) {
       clicked = d.placement;
-      boxmargin = 230
       var boxheight = img_height + boxmargin;
 
       svg_content.selectAll('timelinebox')
@@ -205,7 +208,7 @@ svg_timeline.selectAll("myrect")
       .append("rect")
       .attr("x", 0)
       .attr("y", function(d) {return y(+d.placement) - 5 + img_height; })
-      .attr("width", width - 30)
+      .attr("width", width - 25)
       .attr("height", boxmargin)
       .attr("fill", "#f3f3f3")
       .attr("id", "timelinebox")
@@ -216,33 +219,33 @@ svg_timeline.selectAll("myrect")
       .enter()
       .append("rect")
       .attr("x", 0)
-      .attr("y", function(d) {return y(+d.placement) - 30 + img_height; })
-      .attr("width", width - 30)
+      .attr("y", function(d) {return y(+d.placement) - 25 + img_height; })
+      .attr("width", width - 25)
       .attr("height", 30)
       .attr("fill", "#003262")
       .attr("id", "timelinebar")
       .attr("opacity", 0.8)
 
-    svg_content.append('g')
-    .selectAll('.dummyText')     // declare a new CSS class 'dummyText'
-    .data([d])
-    .enter()                     // create new element
-    .append("text")              // add element to class
-    .attr("font-family", "benton-sans")
-    .attr("font-size", "18")
-    .text(function(d) { return d.credit})
-    .each(function(d,i) {
-        textWidth = this.getComputedTextLength()
-        this.remove() // remove them just after displaying them
-        console.log(textWidth);
-    })
+//    svg_content.append('g')
+//    .selectAll('.dummyText')     // declare a new CSS class 'dummyText'
+//    .data([d])
+//    .enter()                     // create new element
+//    .append("text")              // add element to class
+//    .attr("font-family", "benton-sans")
+//    .attr("font-size", "18")
+//    .text(function(d) { return d.credit})
+//    .each(function(d,i) {
+//        textWidth = this.getComputedTextLength()
+//        this.remove() // remove them just after displaying them
+//        console.log(textWidth);
+//    })
 
     svg_content.append("g")
       .selectAll("text")
       .data([d])
       .enter().append("text")
-      .attr("x", width - 40 - textWidth)
-        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin - 15; })
+      .attr("x", 10)
+        .attr("y", function(d) { return y(+d.placement) + boxheight - boxmargin - 10; })
         .attr("dy", 6)
         .attr("id", "photo-credit")
         .style("font-family", "benton-sans")
@@ -263,13 +266,19 @@ svg_timeline.selectAll("myrect")
         .style("fill", "black")
       .html(function(d) { return d.long })
 
+      if (pageWidth < 400) {
+        extra = 30;
+      } else {
+        extra = 0
+      }
+
       if (d.link.length > 0 ) {
           svg_content.append("g")
             .selectAll("text")
             .data([d])
             .enter().append("text")
             .attr("x", 15)
-              .attr("y", function(d) { return y(+d.placement) + boxheight - 40; })
+              .attr("y", function(d) { return y(+d.placement) + boxheight - 40 - extra; })
               .attr("dy", 6)
               .attr("id", "archive-link")
               .style("font-family", "benton-sans")
@@ -311,7 +320,7 @@ svg_timeline.selectAll("myrect")
       .attr("rx", 30)
       .attr("ry", 30)
       .attr("width", 310)
-      .attr("height", 132)
+      .attr("height", hoverheight)
       .attr("id", "clickedbox")
       .style("opacity", 100)
       .attr("fill", "#f3f3f3")
@@ -343,7 +352,7 @@ svg_timeline.selectAll("myrect")
   });
 }
 
-  svg_timeline.selectAll('#timeline-content').call(wrap, 240, 120);
+  svg_timeline.selectAll('#timeline-content').call(wrap, 260, 120);
     function showLabel_click(d) {
      //d3.selectAll('#ylabel').each(function(d1, i) {
      //  d3.select(this)
@@ -398,7 +407,7 @@ svg_timeline.selectAll("myrect")
       .attr("rx", 30)
       .attr("ry", 30)
       .attr("width", 310)
-      .attr("height", 132)
+      .attr("height", hoverheight)
       .attr("id", "raised")
       .style("opacity", 100)
       .attr("fill", "#f3f3f3")
